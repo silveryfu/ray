@@ -54,4 +54,4 @@ spec:
                   fieldPath: status.podIP
           resources:
             requests:
-              cpu: 10
+              cpu: 2
