@@ -1,6 +1,8 @@
 #!/bin/bash
 set -x
 
+REPO=silveryfu
+
 while [[ $# -gt 0 ]]
 do
 key="$1"
@@ -27,27 +29,27 @@ done
 
 # Build base dependencies, allow caching
 if [ $OUTPUT_SHA ]; then
-    IMAGE_SHA=$(docker build $NO_CACHE -q -t ray-project/base-deps docker/base-deps)
+    IMAGE_SHA=$(docker build $NO_CACHE -q -t ${REPO}/base-deps docker/base-deps)
 else
-    docker build $NO_CACHE -t ray-project/base-deps docker/base-deps
+    docker build $NO_CACHE -t ${REPO}/base-deps docker/base-deps
 fi
 
 # Build the current Ray source
 git rev-parse HEAD > ./docker/deploy/git-rev
 git archive -o ./docker/deploy/ray.tar "$(git rev-parse HEAD)"
 if [ $OUTPUT_SHA ]; then
-    IMAGE_SHA=$(docker build --no-cache -q -t ray-project/deploy docker/deploy)
+    IMAGE_SHA=$(docker build --no-cache -q -t ${REPO}/deploy docker/deploy)
 else
-    docker build --no-cache -t ray-project/deploy docker/deploy
+    docker build --no-cache -t ${REPO}/deploy docker/deploy
 fi
 rm ./docker/deploy/ray.tar ./docker/deploy/git-rev
 
 # Build the examples, unless skipped
 if [ ! $SKIP_EXAMPLES ]; then
     if [ $OUTPUT_SHA ]; then
-        IMAGE_SHA=$(docker build $NO_CACHE -q -t ray-project/examples docker/examples)
+        IMAGE_SHA=$(docker build $NO_CACHE -q -t ${REPO}/examples docker/examples)
     else
-        docker build --no-cache -t ray-project/examples docker/examples
+        docker build --no-cache -t ${REPO}/examples docker/examples
     fi
 fi
 
