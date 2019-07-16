@@ -20,8 +20,11 @@ case $key in
     # are running on the same machine. It also can facilitate cleanup.
     OUTPUT_SHA=YES
     ;;
+    --examples-only)
+    EXAMPLES_ONLY=YES
+    ;;
     *)
-    echo "Usage: build-docker.sh [ --no-cache ] [ --skip-examples ] [ --sha-sums ]"
+    echo "Usage: build-docker.sh [ --no-cache ] [ --skip-examples ] [ --examples-only ] [ --sha-sums ]"
     exit 1
 esac
 shift
@@ -37,19 +40,23 @@ fi
 # Build the current Ray source
 git rev-parse HEAD > ./docker/deploy/git-rev
 git archive -o ./docker/deploy/ray.tar "$(git rev-parse HEAD)"
-if [ $OUTPUT_SHA ]; then
-    IMAGE_SHA=$(docker build --no-cache -q -t ${REPO}/deploy docker/deploy)
-else
-    docker build --no-cache -t ${REPO}/deploy docker/deploy
+if [ ! $EXAMPLES_ONLY ]; then
+    if [ $OUTPUT_SHA ]; then
+        IMAGE_SHA=$(docker build --no-cache -q -t ${REPO}/deploy docker/deploy)
+    else
+        docker build ${NO_CACHE} -t ${REPO}/deploy docker/deploy
+    fi
 fi
+
 rm ./docker/deploy/ray.tar ./docker/deploy/git-rev
 
+echo ${REPO}
 # Build the examples, unless skipped
 if [ ! $SKIP_EXAMPLES ]; then
     if [ $OUTPUT_SHA ]; then
-        IMAGE_SHA=$(docker build $NO_CACHE -q -t ${REPO}/examples docker/examples)
+        IMAGE_SHA=$(docker build $NO_CACHE -q -t ${REPO}/ray-examples docker/examples)
     else
-        docker build --no-cache -t ${REPO}/examples docker/examples
+        docker build ${NO_CACHE} -t ${REPO}/ray-examples docker/examples
     fi
 fi
 
