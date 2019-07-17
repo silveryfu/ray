@@ -1,6 +1,9 @@
 # The base-deps Docker image installs main libraries needed to run Ray
 
 FROM ubuntu:xenial
+ENV LC_ALL=C.UTF-8
+ENV LANG=C.UTF-8
+
 RUN apt-get update \
     && apt-get install -y \
         git \

@@ -2,6 +2,8 @@
 
 FROM silveryfu/deploy
 
+ENV LC_ALL=C.UTF-8
+ENV LANG=C.UTF-8
 # This updates numpy to 1.14 and mutes errors from other libraries
 RUN conda install -y numpy
 RUN apt-get install -y zlib1g-dev
