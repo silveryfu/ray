@@ -47,7 +47,7 @@ spec:
             topologyKey: kubernetes.io/hostname
       containers:
         - name: ray-head
-          image: ray-project/examples
+          image: rayproject/examples
           command: [ "/bin/bash", "-c", "--" ]
           args:
             - "wget https://raw.githubusercontent.com/silveryfu/ray/k8s/kubernetes/old-example.py &&
@@ -93,7 +93,7 @@ spec:
             topologyKey: kubernetes.io/hostname
       containers:
         - name: ray-worker
-          image: ray-project/examples
+          image: rayproject/examples
           command: ["/bin/bash", "-c", "--"]
           args: ["ray start --node-ip-address=$MY_POD_IP --redis-address=$(python -c 'import socket;import sys; sys.stdout.write(socket.gethostbyname(\"ray-head\"));sys.stdout.flush()'):6379 --object-manager-port=12345 --node-manager-port=12346 --block"]
           ports:
